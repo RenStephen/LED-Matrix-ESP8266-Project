@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <h3>click here to query for weather data</h3>
+    <button id = "btn" onclick="buttonFunction()">Weather</button>
+    <p id = "weather">{asdf}</p>
+  </body>
+</html>
+<script>
+
+    const url="http://192.168.0.45/handle_rain"
+    const button = document.getElementById("btn");
+    const weather_element = document.getElementById("weather");
+
+    const buttonFunction = () => {
+      HTTP = new XMLHttpRequest();
+      HTTP.open("GET", url);
+      HTTP.send();
+
+      button.innerHTML = "Obtaining weather Data...";
+      HTTP.onreadystatechange = (e) => {
+        if (HTTP.readyState === 4 && HTTP.status === 200) {
+          button.innerText = "Weather";
+          response = JSON.parse(HTTP.responseText);
+          console.log(response.list[0].main.temp);
+          weather_element.innerText = String(response.list[0].main.temp);
+        }
+      }
+    }
+
+</script>
