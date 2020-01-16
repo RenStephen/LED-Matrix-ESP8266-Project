@@ -1,31 +1,19 @@
 #include <ESP8266WebServer.h>
-#include <Adafruit_SSD1306.h>
 #include <WiFiClient.h>
 #include <ESP8266WiFiMulti.h> 
 
-#define PIN D3
-
+// the webserver. this hosts the api endpoitns
 ESP8266WebServer server(80);
-Adafruit_SSD1306 lcd(-1);
 
 // WIFI configurations
-const String NETWORK_SSID     = "NETGEAR49";
-const String PASSWORD         = "calmink368";
-
-// const String NETWORK_SSID     = "Linksys28761";
-// const String PASSWORD         = "01vzecjkii";
+const String NETWORK_SSID    = "NETGEAR49";
+const String PASSWORD        = "calmink368";
 
 //HTML Status codes
 const int HTTP_OK               = 200;
 const int NOT_FOUND             = 404;
 const int INTERNAL_SERVER_ERROR = 500;
 const int BAD_REQUEST           = 400;
-
-void setupLCD() {
-  lcd.begin(SSD1306_SWITCHCAPVCC, 0x3C); 
-  lcd.setTextColor(WHITE); 
-  lcd.clearDisplay(); lcd.display(); 
-}
 
 void connectToWIFI() {
   // connect to the wifi network
