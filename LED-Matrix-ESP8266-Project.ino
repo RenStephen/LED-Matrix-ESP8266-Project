@@ -1,5 +1,4 @@
 #include <ESP8266WiFi.h>
-#include <HttpClient.h>
 #include <ESP8266HTTPClient.h>
 #include <FS.h>
 #include "Game_of_Life.h"
@@ -19,10 +18,18 @@ void handleIndex(){
 }
 
 void setMatrix() {
-  for (int i = 0 ; i < SIZE ; i++) {
-    matrix.drawPixel(0, i, matrix.Color(255,0,0));
-    delay(50);
+  GameOfLife game = GameOfLife();
+  for (int j = 0; j < 100; j++) {
+    for (int i = 0; i < SIZE; i++) {
+      if (game.getCellState(i)) {
+        matrix.drawPixel(0, i, matrix.Color((int)random(255), (int)random(255), (int)random(255)));
+      } else {
+        matrix.drawPixel(0, i, matrix.Color(0, 0, 0));
+      }
+    }
     matrix.show();
+    delay(100);
+    game.calculateNextState();
   }
   server.send(HTTP_OK, "text/plain", "matrix has been set!");
 }
@@ -46,6 +53,8 @@ void handleNotFound() {
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
+
+  randomSeed(analogRead(0)); 
   
   // connect to the wifi network
   connectToWIFI();

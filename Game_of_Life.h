@@ -18,19 +18,16 @@ void setupMatrix() {
 
 class GameOfLife {
     private:
-        bool* state;
-        bool* nextState;
+        bool state[SIZE];
+        bool nextState[SIZE];
     public:
         GameOfLife() {
-            randomSeed(analogRead(0)); 
-            bool initState[SIZE];
             for (int i = 0; i < SIZE; i++) {
-                initState[i] = ((int)random(20)%2 == 0);
+                state[i] = ((int)random(4)%2 == 0);
             }
         }
-
-        void setGamestate(bool* newState) {
-            this->state = newState;
+        bool getCellState(int cell) {
+            return this->state[cell];
         }
           
         int check(int index) {
@@ -50,9 +47,8 @@ class GameOfLife {
 
         void calculateNextState() {
             for (int i = 0 ; i < SIZE ; i++) {
-                nextState[i] = lifeRules(i);
+                this->state[i] = lifeRules(i);
             }
-            this->state = nextState;
         }
 
         bool lifeRules(int index){
