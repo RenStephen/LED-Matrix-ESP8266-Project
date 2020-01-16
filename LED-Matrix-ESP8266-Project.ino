@@ -1,9 +1,8 @@
 #include <ESP8266WiFi.h>
 #include <HttpClient.h>
 #include <ESP8266HTTPClient.h>
-#include <ArduinoJson.h>
 #include <FS.h>
-
+#include "Game_of_Life.h"
 #include "utils.h"
 #include "Weather.h"
 
@@ -20,14 +19,12 @@ void handleIndex(){
 }
 
 void setMatrix() {
-  server.sendHeader("Access-Control-Allow-Origin", "*");
-  if (!server.hasArg("payload")) {
-    server.send(BAD_REQUEST, "test/plain", "BAD REQUEST");
-    return;
+  for (int i = 0 ; i < SIZE ; i++) {
+    matrix.drawPixel(0, i, matrix.Color(255,0,0));
+    delay(50);
+    matrix.show();
   }
-  String payload = server.arg("payload");
-  // here i need to parse the payload delimmit on strings. we are expecting a boolean or byte array
-
+  server.send(HTTP_OK, "text/plain", "matrix has been set!");
 }
 
 void handleRain() {
@@ -53,14 +50,19 @@ void setup() {
   // connect to the wifi network
   connectToWIFI();
 
+  //setup the matrix
+  setupMatrix();
+
   // start the file system
   SPIFFS.begin();
 
   // begin the server endpoints
   server.on("/", handleIndex);
   server.on("/handle_rain", handleRain);
+  server.on("/set_matrix", setMatrix);
   server.onNotFound(handleNotFound);
   server.begin(); //Start the servers
+  
 }
 
 void loop() {
