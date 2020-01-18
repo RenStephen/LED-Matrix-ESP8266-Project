@@ -5,6 +5,8 @@
 #include "utils.h"
 #include "Weather.h"
 
+int state = 0;
+
 void handleIndex(){
   String path = "/test.html";
   String contentType = getContentType(path);
@@ -19,18 +21,16 @@ void handleIndex(){
 
 void setMatrix() {
   GameOfLife game = GameOfLife();
-  for (int j = 0; j < 100; j++) {
-    for (int i = 0; i < SIZE; i++) {
-      if (game.getCellState(i)) {
-        matrix.drawPixel(0, i, matrix.Color((int)random(255), (int)random(255), (int)random(255)));
-      } else {
-        matrix.drawPixel(0, i, matrix.Color(0, 0, 0));
-      }
+  for (int i = 0; i < SIZE; i++) {
+    if (game.getCellState(i)) {
+      matrix.drawPixel(0, i, matrix.Color((int)random(255), (int)random(255), (int)random(255)));
+    } else {
+      matrix.drawPixel(0, i, matrix.Color(0, 0, 0));
     }
-    matrix.show();
-    delay(100);
-    game.calculateNextState();
   }
+  matrix.show();
+  delay(100);
+  game.calculateNextState();
   server.send(HTTP_OK, "text/plain", "matrix has been set!");
 }
 
