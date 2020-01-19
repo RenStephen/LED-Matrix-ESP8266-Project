@@ -1,6 +1,5 @@
 #include <WiFiClient.h>
 #include <ArduinoJson.h>
-#include <String.h>
 
 // Weather station configurations
 const String CITY     = "Boston,US";
