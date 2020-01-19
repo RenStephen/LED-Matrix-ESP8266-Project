@@ -1,9 +1,9 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
 #include <FS.h>
-#include "Game_of_Life.h"
 #include "utils.h"
 #include "Weather.h"
+#include "matrix.h"
 
 int state = 0;
 
@@ -20,21 +20,17 @@ void handleIndex(){
 }
 
 void setMatrix() {
-  GameOfLife game = GameOfLife();
-  for (int i = 0; i < SIZE; i++) {
-    if (game.getCellState(i)) {
-      matrix.drawPixel(0, i, matrix.Color((int)random(255), (int)random(255), (int)random(255)));
-    } else {
-      matrix.drawPixel(0, i, matrix.Color(0, 0, 0));
-    }
-  }
-  matrix.show();
-  delay(100);
-  game.calculateNextState();
+  game.setRandomGameState();
+  state = 1;
   server.send(HTTP_OK, "text/plain", "matrix has been set!");
 }
 
 void handleRain() {
+  state = 3;
+  server.send(HTTP_OK, "text/plain", "its raining now");
+}
+
+void handleWeather() {
   server.sendHeader("Access-Control-Allow-Origin", "*");
   WeatherClient client;
   if (!client.getWeatherData() || !client.parseContent()) {
@@ -67,8 +63,9 @@ void setup() {
 
   // begin the server endpoints
   server.on("/", handleIndex);
-  server.on("/handle_rain", handleRain);
+  server.on("/handle_weather", handleWeather);
   server.on("/set_matrix", setMatrix);
+  server.on("/handle_rain", handleRain);
   server.onNotFound(handleNotFound);
   server.begin(); //Start the servers
   
@@ -76,4 +73,5 @@ void setup() {
 
 void loop() {
   server.handleClient();
+  displayMatrix(state);
 }

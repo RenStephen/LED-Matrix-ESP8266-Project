@@ -1,30 +1,20 @@
-#include <Adafruit_NeoMatrix.h>
-
-// Matrix dimensions
-const unsigned int HEIGHT = 8;
-const unsigned int WIDTH  = 8;
-const unsigned int SIZE   = 64;
-
-#define PIN D3
-
-// inefficient, but unavoidable
-Adafruit_NeoMatrix matrix = Adafruit_NeoMatrix(1, SIZE, PIN);
-
-void setupMatrix() {
-  matrix.begin();
-  matrix.setTextWrap(false);
-  matrix.setBrightness(40);
-}
-
 class GameOfLife {
     private:
-        bool state[SIZE];
-        bool nextState[SIZE];
+        int SIZE;
+        int WIDTH;
+        bool* state;
+        bool* nextState;
     public:
-        GameOfLife() {
-            for (int i = 0; i < SIZE; i++) {
-                state[i] = ((int)random(4)%2 == 0);
-            }
+        GameOfLife(int matrixSize, int matrixWidth) {
+            this->WIDTH = matrixWidth;
+            this->SIZE = matrixSize;
+            state = new bool[SIZE];
+        }
+
+        void setRandomGameState() {
+          for (int i = 0; i < SIZE; i++) {
+              state[i] = ((int)random(4)%2 == 0);
+          }
         }
         
         bool getCellState(int cell) {
