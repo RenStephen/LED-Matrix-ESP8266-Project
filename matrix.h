@@ -23,28 +23,28 @@ void setupMatrix() {
 }
 
 void drawRain(){
-  for (int i = SIZE-1; i >=0 ; i--) {
-    if (rain[i]) {
-      if (i+WIDTH > SIZE-1) {
+    for (int i = SIZE-1; i >=0 ; i--) {
+        if (rain[i]) {
+            if (i+WIDTH > SIZE-1) {
+                rain[i] = false;
+                continue;
+            }
+            rain[i+WIDTH] = true;
+        }
         rain[i] = false;
-        continue;
-      }
-      rain[i+WIDTH] = true;
     }
-    rain[i] = false;
-  }
-  
-  int x = random(WIDTH);
-  rain[x] = 1;
-  for (int i = 0; i < SIZE; i++) {
-    if (rain[i]) {
-      matrix.drawPixel(0, i, matrix.Color(0,0,255));
-    } else {
-      matrix.drawPixel(0, i, matrix.Color(0,0,0));
+    
+    int x = random(WIDTH);
+    rain[x] = 1;
+    for (int i = 0; i < SIZE; i++) {
+        if (rain[i]) {
+            matrix.drawPixel(0, i, matrix.Color(0,0,255));
+        } else {
+            matrix.drawPixel(0, i, matrix.Color(0,0,0));
+        }
     }
-  }
-  matrix.show();
-  delay(50);
+    matrix.show();
+    delay(50);
 }
 
 void displayMatrix(int state) {

@@ -16,24 +16,24 @@ const int INTERNAL_SERVER_ERROR = 500;
 const int BAD_REQUEST           = 400;
 
 void connectToWIFI() {
-  // connect to the wifi network
-  Serial.println("\n\nConnecting to: "+NETWORK_SSID+"\n");
-  
-  WiFi.begin(NETWORK_SSID, PASSWORD);
-  
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }
-  Serial.println("WiFi connected\nIP address: ");  
-  Serial.println(WiFi.localIP());
+	// connect to the wifi network
+	Serial.println("\n\nConnecting to: "+NETWORK_SSID+"\n");
+	
+	WiFi.begin(NETWORK_SSID, PASSWORD);
+	
+	while (WiFi.status() != WL_CONNECTED) {
+		delay(500);
+		Serial.print(".");
+	}
+	Serial.println("WiFi connected\nIP address: ");  
+	Serial.println(WiFi.localIP());
 }
 
 // convert the file extension to the MIME type
 String getContentType(String filename) { 
-  if (filename.endsWith(".html")) return "text/html";
-  else if (filename.endsWith(".css")) return "text/css";
-  else if (filename.endsWith(".js")) return "application/javascript";
-  else if (filename.endsWith(".ico")) return "image/x-icon";
-  return "text/plain";
+    if (filename.endsWith(".html")) return "text/html";
+    else if (filename.endsWith(".css")) return "text/css";
+    else if (filename.endsWith(".js")) return "application/javascript";
+    else if (filename.endsWith(".ico")) return "image/x-icon";
+    return "text/plain";
 }
