@@ -12,13 +12,66 @@
     <button id="Game of life" onclick="gameOfLifeFunction()">
       Game of life
     </button>
+    <table id="tbl"></table>
+    <button onclick="setGameState()">Set Game of Life</button>
   </body>
 </html>
+<style>
+  table,
+  td {
+    border: 1px solid black;
+  }
+  #cell {
+    width: 50px;
+    height: 50px;
+  }
+</style>
 <script>
   const url = "http://192.168.0.45/";
   const button = document.getElementById("btn");
-  const weather_element = document.getElementById("weather");
+  const weatherElement = document.getElementById("weather");
   const HTTP = new XMLHttpRequest();
+  const WHITE = "#ffffff";
+  const BLACK = "#000000";
+  const WIDTH = 8;
+
+  x = document.getElementById("tbl");
+  var y;
+  for (var i = 0; i < WIDTH ** 2; i++) {
+    if (i % (WIDTH + 1) == 0) {
+      y = document.createElement("TR");
+      x.appendChild(y);
+    } else {
+      var z = document.createElement("TD");
+      z.innerHTML = '<div id="cell" onclick=changeColor(this)></div>';
+      y.appendChild(z);
+    }
+  }
+
+  const setGameState = () => {
+    var table = document.getElementById("tbl");
+    var r = 0;
+    var state = [];
+    while ((row = table.rows[r++])) {
+      var c = 0;
+      while ((cell = row.cells[c++])) {
+        color = cell.childNodes.item("cell").style.background;
+        state.push(color === "rgb(0, 0, 0)" ? 1 : 0);
+      }
+    }
+    console.log(String(state));
+    HTTP.open("POST", url + "set_game_state");
+    HTTP.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    HTTP.send("plain="+String(state));
+  };
+
+  const changeColor = element => {
+    if (element.style.background === "rgb(0, 0, 0)") {
+      element.style.background = WHITE;
+    } else {
+      element.style.background = BLACK;
+    }
+  };
 
   const rainFunction = () => {
     HTTP.open("GET", url + "handle_rain");
@@ -38,7 +91,7 @@
         button.innerText = "Weather";
         response = JSON.parse(HTTP.responseText);
         console.log(response.list[0].main.temp);
-        weather_element.innerText = String(response.list[0].main.temp);
+        weatherElement.innerText = String(response.list[0].main.temp);
       }
     };
   };
