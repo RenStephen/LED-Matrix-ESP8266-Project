@@ -60,15 +60,23 @@ void handleNotFound()
 void setGameState()
 {
   server.sendHeader("Access-Control-Allow-Origin", "*");
-  if (!server.hasArg("plain"))
+  if (!server.hasArg("plain") || !server.hasArg("length"))
   {
-    server.send(HTTP_OK, "text/plain", "Body not received");
+    server.send(BAD_REQUEST, "text/plain", "Body not received propperly");
     return;
   }
-  String message = "Body received:\n";
-  message += server.arg("plain");
-  message += "\n";
-  Serial.println(message);
+  String message = server.arg("plain");
+  int length = server.arg("length").toInt();
+  if (length != WIDTH * WIDTH)
+  {
+    server.send(BAD_REQUEST, "text/plain", "Body not received propperly");
+    return;
+  }
+  for (int i = 0; i < length; i++)
+  {
+    game.setCellState(i, message.charAt(i * 2) == '1');
+  }
+  state = 1;
   server.send(HTTP_OK, "text/plain", message);
 }
 

@@ -62,7 +62,7 @@
     console.log(String(state));
     HTTP.open("POST", url + "set_game_state");
     HTTP.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    HTTP.send("plain="+String(state));
+    HTTP.send("plain="+String(state)+"&length="+WIDTH**2);
   };
 
   const changeColor = element => {
@@ -78,7 +78,7 @@
     HTTP.send();
   };
   const gameOfLifeFunction = () => {
-    HTTP.open("GET", url + "set_matrix");
+    HTTP.open("GET", url + "set_random_game_state");
     HTTP.send();
   };
   const buttonFunction = () => {
