@@ -4,7 +4,6 @@ private:
   int SIZE;
   int WIDTH;
   bool *state;
-  bool *nextState;
 
 public:
   GameOfLife(int matrixSize, int matrixWidth)
@@ -12,6 +11,11 @@ public:
     this->WIDTH = matrixWidth;
     this->SIZE = matrixSize;
     state = new bool[SIZE];
+  }
+
+  void setCellState(int index, bool isAlive) 
+  {
+    this->state[index] = isAlive;
   }
 
   void setRandomGameState()

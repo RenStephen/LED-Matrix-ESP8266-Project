@@ -1,6 +1,8 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
 #include <FS.h>
+#include <ESP8266WebServer.h>
+
 #include "utils.h"
 #include "Weather.h"
 #include "matrix.h"
@@ -23,7 +25,7 @@ void handleIndex()
   }
 }
 
-void setMatrix()
+void setRandomGameState()
 {
   game.setRandomGameState();
   state = 1;
@@ -55,6 +57,29 @@ void handleNotFound()
   server.send(NOT_FOUND, "text/plain", "404 resource not found. try another endpoint like /weather, or /");
 }
 
+void setGameState()
+{
+  server.sendHeader("Access-Control-Allow-Origin", "*");
+  if (!server.hasArg("plain") || !server.hasArg("length"))
+  {
+    server.send(BAD_REQUEST, "text/plain", "Body not received propperly");
+    return;
+  }
+  String message = server.arg("plain");
+  int length = server.arg("length").toInt();
+  if (length != WIDTH * WIDTH)
+  {
+    server.send(BAD_REQUEST, "text/plain", "Body not received propperly");
+    return;
+  }
+  for (int i = 0; i < length; i++)
+  {
+    game.setCellState(i, message.charAt(i * 2) == '1');
+  }
+  state = 1;
+  server.send(HTTP_OK, "text/plain", message);
+}
+
 void setup()
 {
   // put your setup code here, to run once:
@@ -74,7 +99,8 @@ void setup()
   // begin the server endpoints
   server.on("/", handleIndex);
   server.on("/handle_weather", handleWeather);
-  server.on("/set_matrix", setMatrix);
+  server.on("/set_random_game_state", setRandomGameState);
+  server.on("/set_game_state", setGameState);
   server.on("/handle_rain", handleRain);
   server.onNotFound(handleNotFound);
   server.begin(); //Start the servers
