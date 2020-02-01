@@ -4,11 +4,13 @@
 // Matrix dimensions
 const unsigned int HEIGHT = 8;
 const unsigned int WIDTH = 8;
-const unsigned int SIZE = 64;
+const unsigned int SIZE = HEIGHT*WIDTH;
 
 #define PIN D3
 
-bool rain[256];
+bool rain[SIZE];
+int x    = WIDTH;
+int pass = 0;
 
 // the game class
 GameOfLife game = GameOfLife(SIZE, WIDTH);
@@ -21,6 +23,7 @@ void setupMatrix()
   matrix.begin();
   matrix.setTextWrap(false);
   matrix.setBrightness(40);
+  matrix.setTextColor(matrix.Color(0, 255, 0));
 }
 
 void drawRain()
@@ -53,7 +56,7 @@ void drawRain()
     }
   }
   matrix.show();
-  delay(50);
+  delay(10);
 }
 
 void displayMatrix(int state)
@@ -68,6 +71,8 @@ void displayMatrix(int state)
     matrix.show();
     break;
   case 1:
+    game.calculateNextState();
+  case 2:
     for (int i = 0; i < SIZE; i++)
     {
       if (game.getCellState(i))
@@ -79,12 +84,22 @@ void displayMatrix(int state)
         matrix.drawPixel(0, i, matrix.Color(0, 0, 0));
       }
     }
-    game.calculateNextState();
-    delay(250);
+    delay(100);
     matrix.show();
     break;
   case 3:
     drawRain();
+    break;
+  case 4:
+    // this is going to be the matrix print funciton.
+    matrix.fillScreen(0);
+    matrix.setCursor(0, 0);
+    matrix.print(F("Howdy"));
+    if(--x < -36) {
+      x = matrix.width();
+    }
+    matrix.show();
+    delay(100);
     break;
   }
 }

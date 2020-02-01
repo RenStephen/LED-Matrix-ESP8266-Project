@@ -7,7 +7,7 @@
 #include "Weather.h"
 #include "matrix.h"
 
-int state = 0;
+int state = 4;
 
 void handleIndex()
 {
@@ -76,8 +76,13 @@ void setGameState()
   {
     game.setCellState(i, message.charAt(i * 2) == '1');
   }
-  state = 1;
+  state = 2;
   server.send(HTTP_OK, "text/plain", message);
+}
+
+void runGame() {
+  state = 1;
+  server.send(HTTP_OK, "text/plain", "game running");
 }
 
 void setup()
@@ -102,6 +107,7 @@ void setup()
   server.on("/set_random_game_state", setRandomGameState);
   server.on("/set_game_state", setGameState);
   server.on("/handle_rain", handleRain);
+  server.on("/run_game", runGame);
   server.onNotFound(handleNotFound);
   server.begin(); //Start the servers
 }

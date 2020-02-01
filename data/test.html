@@ -13,15 +13,17 @@
       Game of life
     </button>
     <table id="tbl"></table>
-    <button onclick="setGameState()">Set Game of Life</button>
+    <button onclick="runGmae()">Set Game of Life</button>
   </body>
 </html>
 <style>
   table,
   td {
     border: 1px solid black;
+    width: 50px;
+    height: 50px;
   }
-  #cell {
+  .cell {
     width: 50px;
     height: 50px;
   }
@@ -38,16 +40,19 @@
   x = document.getElementById("tbl");
   var y;
   for (var i = 0; i < WIDTH ** 2; i++) {
-    if (i % (WIDTH + 1) == 0) {
+    if (i % (WIDTH) == 0) {
       y = document.createElement("TR");
       x.appendChild(y);
-    } else {
-      var z = document.createElement("TD");
-      z.innerHTML = '<div id="cell" onclick=changeColor(this)></div>';
-      y.appendChild(z);
-    }
+    } 
+    var z = document.createElement("TD");
+    z.innerHTML = '<div class="cell" id="'+i+'" onclick=changeColor(this)></div>';
+    y.appendChild(z);
   }
 
+  const runGmae = () => {
+    HTTP.open("GET", url + "run_game");
+    HTTP.send();
+  }
   const setGameState = () => {
     var table = document.getElementById("tbl");
     var r = 0;
@@ -59,7 +64,6 @@
         state.push(color === "rgb(0, 0, 0)" ? 1 : 0);
       }
     }
-    console.log(String(state));
     HTTP.open("POST", url + "set_game_state");
     HTTP.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     HTTP.send("plain="+String(state)+"&length="+WIDTH**2);
@@ -71,6 +75,7 @@
     } else {
       element.style.background = BLACK;
     }
+    setGameState();
   };
 
   const rainFunction = () => {
